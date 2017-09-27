@@ -8,7 +8,7 @@ from train import Model
 from input import resize_with_pad, write_image
 from input import IMAGE_SIZE, GRAY_MODE
 
-DEBUG_OUTPUT = True
+DEBUG_OUTPUT = False
 CropPadding = 10
 
 StrictMode = False
@@ -109,16 +109,16 @@ if __name__ == '__main__':
                 print('isme', isme, 'notme', notme)
 
         # End if Face Detected
-        
-        print(nDelay)
 
         if recStatus == -1 or (recStatus == 0 and (StrictMode or nDelay >= MaxPromptDelay)):
             nDelay += SampleInterval
+            print('Last notme:', nDelay, 'ago')
         elif recStatus == 1:
             nDelay = 0
             cv2.destroyWindow('Recognizing')
 
         if nDelay >= MaxFailDelay: # Lock Windows
+            print("Locking computer.")
             ctypes.windll.user32.LockWorkStation()
             cv2.destroyWindow('Recognizing')
             
