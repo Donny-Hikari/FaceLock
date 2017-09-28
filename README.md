@@ -9,7 +9,7 @@ When count down to MaxFailDelay, FaceLock lock your computer automatically.
 ![lockup](./readme_res/main_lockup.png)  
 
 ## Accuracy  
-The valid result is as follow. Please be aware that it's just test with limit cases and may be different vary to images inputted.  
+The valid result is as follow. Please be aware that it's just tested with limit cases and may be different vary to images inputted.  
 ![valid_result](./readme_res/valid_result.png)  
 However, so far, FaceLock has never mistake others for me during my test after I add some layers and increase epoch. Although sometimes it might fail to recognize me if I make faces.  
 Please let me know if in your case FaceLock happens to mistake someone else for you.  
@@ -19,8 +19,10 @@ Please let me know if in your case FaceLock happens to mistake someone else for 
 * Windows 10  
 * WebCamera  
 * Lots of images of you and others  
+
 Put the training images to [data/train/me](./data/train/me) and [data/train/other](./data/train/other).  
 Put the validation images to [data/valid/me](./data/valid/me) and [data/valid/other](./data/valid/other).  
+Please notice that validating image should be different from training image. Validating serves as a simulation for real time input.  
 In case you are puzzled about how much images will be enought, I am using about 160 images of myself and 290 images of others.  
 
 ## Preparation  
@@ -46,6 +48,19 @@ Then, validate the network.
 Finally, start FaceLock.  
 ```  
 > python main.py  
+```  
+
+To start FaceLock in background, use pythonw on windows.  
+```  
+> pythonw \path\to\FaceLock\main.py 1>stdout.txt 2>stderr.txt
+```  
+
+# About Gray Mode  
+Comparing to [Hironsan](https://github.com/Hironsan)'s project [BossSensor](https://github.com/Hironsan/BossSensor), I use grayscale images instead of BGR images. In my opinion, neutral network trained with grayscale images has better fitness, and is less affected by the environment. Of course, it takes longer to train. So I reduce the dropout rate and increase the training epoch. It turns out to work fine.  
+You can switch between gray mode and BGR mode, simply change GRAY_MODE in input.py to True or False.  
+``` python  
+# input.py  
+GRAY_MODE = True  
 ```  
 
 ## Special Thanks  

@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 import cv2
+import os
 import random
 import time
 import ctypes
@@ -12,9 +13,9 @@ DEBUG_OUTPUT = False
 CropPadding = 10
 
 StrictMode = False
-MaxPromptDelay = 500  # in microsecond
+MaxPromptDelay = 700  # in microsecond
 MaxFailDelay = 3000 # in microsecond
-SampleInterval = 100 # in microsecond
+SampleInterval = 200 # in microsecond
 
 cascade_path = "F:/Software/opencv/sources/data/haarcascades/haarcascade_frontalface_default.xml"
 
@@ -29,6 +30,9 @@ def extendFaceRect(rect):
     return [x, y, w, h]
 
 if __name__ == '__main__':
+    # Change working directory
+    os.chdir(os.path.dirname(os.path.realpath(__file__)))
+
     cap = cv2.VideoCapture(0)
 
     model = Model()
@@ -54,7 +58,7 @@ if __name__ == '__main__':
         # Recognize faces
         facerect = cascade.detectMultiScale(
             frame_gray,
-            scaleFactor=1.3,
+            scaleFactor=1.1,
             minNeighbors=3,
             minSize=(10, 10),
             flags=cv2.CASCADE_SCALE_IMAGE
@@ -120,6 +124,7 @@ if __name__ == '__main__':
         if nDelay >= MaxFailDelay: # Lock Windows
             print("Locking computer.")
             ctypes.windll.user32.LockWorkStation()
+            nDelay = 0
             cv2.destroyWindow('Recognizing')
             
         cv2.waitKey(1)
