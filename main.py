@@ -13,9 +13,9 @@ DEBUG_OUTPUT = False
 CropPadding = 10
 
 StrictMode = False
-MaxPromptDelay = 700  # in microsecond
-MaxFailDelay = 3000 # in microsecond
-SampleInterval = 200 # in microsecond
+MaxPromptDelay = 1000  # in microsecond
+MaxFailDelay = 5000 # in microsecond
+SampleInterval = 400 # in microsecond
 
 cascade_path = "F:/Software/opencv/sources/data/haarcascades/haarcascade_frontalface_default.xml"
 
@@ -28,6 +28,9 @@ def extendFaceRect(rect):
     else: x = 0
     w += 2*CropPadding
     return [x, y, w, h]
+
+def timestamp():
+    return '[' + time.asctime() + ']'
 
 if __name__ == '__main__':
     # Change working directory
@@ -60,13 +63,13 @@ if __name__ == '__main__':
             frame_gray,
             scaleFactor=1.1,
             minNeighbors=3,
-            minSize=(10, 10),
+            minSize=(85, 85),
             flags=cv2.CASCADE_SCALE_IMAGE
         )
 
         recStatus = 0
         if len(facerect) > 0:
-            print('Face detected.')
+            print(timestamp(), 'Face detected.')
             color = (255, 255, 255)  # 白
 
             if nDelay >= MaxPromptDelay: # Show the recognize windows
@@ -75,7 +78,10 @@ if __name__ == '__main__':
                     buffer = frame.copy()
                     cv2.rectangle(buffer, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 
+                cv2.putText(buffer, "Count down: " + str(MaxFailDelay-nDelay),
+                    (10, 50), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 0))
                 cv2.imshow('Recognizing', buffer)
+                # cv2.setWindowProperty("Recognizing", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
                 #cv2.namedWindow('Recognizing', cv2.WINDOW_AUTOSIZE | cv2.WINDOW_KEEPRATIO | cv2.WINDOW_GUI_EXPANDED)
 
             for rect in facerect:
@@ -101,28 +107,28 @@ if __name__ == '__main__':
                         write_image('./output/notme/' + str(random.randint(1,999999)) + '.jpg', outimg)
 
                 if result == 0:  # Is me
-                    print("It's you! Donny!")
+                    print(timestamp(), "It's you! Donny!")
                     isme+=1
                     recStatus = 1
                 else:
-                    print('Not Donny.')
+                    print(timestamp(), 'Not Donny.')
                     notme+=1
                     if recStatus == 0:
                         recStatus = -1
 
-                print('isme', isme, 'notme', notme)
+                print(timestamp(), 'isme', isme, 'notme', notme)
 
         # End if Face Detected
 
         if recStatus == -1 or (recStatus == 0 and (StrictMode or nDelay >= MaxPromptDelay)):
             nDelay += SampleInterval
-            print('Last notme:', nDelay, 'ago')
+            print(timestamp(), 'Last notme:', nDelay, 'ago')
         elif recStatus == 1:
             nDelay = 0
             cv2.destroyWindow('Recognizing')
 
         if nDelay >= MaxFailDelay: # Lock Windows
-            print("Locking computer.")
+            print(timestamp(), "Locking computer.")
             ctypes.windll.user32.LockWorkStation()
             nDelay = 0
             cv2.destroyWindow('Recognizing')
