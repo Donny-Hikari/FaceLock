@@ -10,8 +10,13 @@ When count down to MaxFailDelay, FaceLock lock your computer automatically.
 
 ## Accuracy  
 The valid result is as follow. Please be aware that it's just tested with limit cases and may be different vary to images inputted.  
+Valid result using Adam optimizer:  
+![valid_result_adam](./readme_res/valid_result_adam.png)  
+Valid result using SGD optimizer:  
 ![valid_result](./readme_res/valid_result.png)  
-However, so far, FaceLock has never mistake others for me during my test after I add some layers and increase epoch. Although sometimes it might fail to recognize me if I make faces.  
+From the valid result we can see that Adam reaches better accuracy in less epochs comparing to SGD.  
+  
+So far, FaceLock has never mistake others for me during my test after I add some layers and increase epoch. Although sometimes it might fail to recognize me if I make faces.  
 Please let me know if in your case FaceLock happens to mistake someone else for you.  
 
 ## Requirements  
