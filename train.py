@@ -7,14 +7,14 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Convolution2D, MaxPooling2D
-from keras.optimizers import SGD
 from keras.utils import np_utils
 from keras.models import load_model
+from keras import optimizers
 from keras import backend as K
 
 from input import extract_data, resize_with_pad, IMAGE_SIZE, GRAY_MODE
 
-DEBUG_MUTE = True
+DEBUG_MUTE = True # Stop outputing unnecessary infomation
 
 class DataSet(object):
 
@@ -71,17 +71,23 @@ class DataSet(object):
 
 class Model(object):
 
-    FILE_PATH = './store/model.h5'
+    FILE_PATH = './store/faces.model'
 
-    # DropoutWeights = [ 0.25, 0.25, 0.5 ]
     DropoutWeights = [ 0.1, 0.1, 0.1, 0.2 ]
+    # DropoutWeights = [ 0.25, 0.25, 0.5 ]
 
-    # TrainEpoch = 10
-    TrainEpoch = 320
-    # enough: 640; total fit: 800
+    TrainEpoch = 20
+    # For SGD: enough: 640; total fit: 800
+    # For Adam: enough: 140(0.9864); fit: 220(0.9922)
 
     def __init__(self):
         self.model = None
+
+    def check_existance(self, file_path=FILE_PATH):
+        if os.path.exists(file_path):
+            return True
+        else:
+            return False
 
     def build_model(self, dataset, nb_classes=2):
         self.model = Sequential()
@@ -121,9 +127,10 @@ class Model(object):
         self.model.summary()
 
     def train(self, dataset, batch_size=32, nb_epoch=40, data_augmentation=True):
-        sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+        # sgd = optimizers.SGD(lr=0.01, momentum=0.9, decay=1e-6, nesterov=True)
+        adam = optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0)
         self.model.compile(loss='categorical_crossentropy',
-                            optimizer=sgd,
+                            optimizer=adam,
                             metrics=['accuracy'])
         if not data_augmentation:
             print('Not using data augmentation.')
@@ -202,8 +209,10 @@ if __name__ == '__main__':
         dataset.read()
 
     model = Model()
-    #model.load()
-    model.build_model(dataset)
+    if model.check_existance():
+        model.load()
+    else:
+        model.build_model(dataset)
     model.train(dataset, nb_epoch=model.TrainEpoch)
     model.save()
 

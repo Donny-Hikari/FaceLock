@@ -5,10 +5,10 @@ import numpy as np
 import cv2
 
 IMAGE_SIZE = 64
-GRAY_MODE = True
-DEBUG_OUTPUT = False
-DEBUG_VERBOSE = False
-EX_DATA = True
+GRAY_MODE = True # Transit images to grayscale images
+DEBUG_OUTPUT = False # Output processed images
+DEBUG_VERBOSE = False # Print more detail
+EX_DATA = True # Label images by the name of the first subfolder
 
 def resize_with_pad(image, height=IMAGE_SIZE, width=IMAGE_SIZE):
 

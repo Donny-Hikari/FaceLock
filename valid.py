@@ -9,8 +9,9 @@ from input import extract_data, write_image
 from input import DEBUG_OUTPUT, GRAY_MODE
 # from image_show import show_image
 
-DEBUG_MUTE = True
-CropPadding = 10
+DEBUG_MUTE = True # Stop outputing unnecessary infomation
+DEBUG_OUTPUT = True # Output processed images
+CropPadding = 10 # Padding when cropping faces from frames
 
 test_path = "E:/Common/Projects/FaceLock/data/valid"
 cascade_path = "F:/Software/opencv/sources/data/haarcascades/haarcascade_frontalface_default.xml"
@@ -83,12 +84,14 @@ if __name__ == '__main__':
                     countme += 1
                     if result == 0:
                         rightme += 1
-                    #else:
-                    #    write_image('./output/mistake/' + str(random.randint(1,999999)) + '.jpg', image)
+                    elif DEBUG_OUTPUT == True :
+                        write_image('./output/mistake/' + str(random.randint(1,999999)) + '.jpg', image)
                 else:
                     countnotme += 1
                     if result == 1:
                         rightnotme += 1
+                    elif DEBUG_OUTPUT == True :
+                        write_image('./output/mistake/' + str(random.randint(1,999999)) + '.jpg', image)
 
     print('right: ', right, 'false: ', cross)
     print('countme: ', countme, 'rightme: ', rightme)

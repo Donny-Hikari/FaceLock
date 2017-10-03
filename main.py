@@ -9,8 +9,8 @@ from train import Model
 from input import resize_with_pad, write_image
 from input import IMAGE_SIZE, GRAY_MODE
 
-DEBUG_OUTPUT = False
-CropPadding = 10
+DEBUG_OUTPUT = True # Output captured images
+CropPadding = 10 # Padding when cropping faces from frames
 
 StrictMode = False
 MaxPromptDelay = 1000  # in microsecond
@@ -78,7 +78,7 @@ if __name__ == '__main__':
                     buffer = frame.copy()
                     cv2.rectangle(buffer, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 
-                cv2.putText(buffer, "Count down: " + str(MaxFailDelay-nDelay),
+                cv2.putText(buffer, "Count down: " + str(MaxFailDelay-nDelay) + " ms",
                     (10, 50), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 0))
                 cv2.imshow('Recognizing', buffer)
                 # cv2.setWindowProperty("Recognizing", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
@@ -132,6 +132,7 @@ if __name__ == '__main__':
             ctypes.windll.user32.LockWorkStation()
             nDelay = 0
             cv2.destroyWindow('Recognizing')
+            break
             
         cv2.waitKey(1)
 
